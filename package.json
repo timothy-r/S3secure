@@ -1,0 +1,8 @@
+{
+  "name": "s3-secure",
+  "version": "1.0.0",
+  "description": "securing s3 content",
+  "main": "index.js",
+  "author": "Tim Rodger <tim.rodger@gmail.com>",
+  "license": "MIT"
+}
