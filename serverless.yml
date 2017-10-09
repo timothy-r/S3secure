@@ -1,4 +1,4 @@
-service: S3secure # NOTE: update this with your service name
+service: S3secure
 
 custom:
   stage: ${opt:stage, self:provider.stage}

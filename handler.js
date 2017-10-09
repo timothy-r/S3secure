@@ -1,8 +1,6 @@
 'use strict';
 
-const AWS = require('aws-sdk');
-AWS.config.update({region: process.env.SERVERLESS_REGION});
-const cloudfront = new AWS.CloudFront({apiVersion: '2017-03-25'});
+const signer = require("./signed-cookie");
 
 /**
  *
@@ -12,29 +10,37 @@ const cloudfront = new AWS.CloudFront({apiVersion: '2017-03-25'});
  */
 module.exports.index = (event, context, callback) => {
 
-    // generate signed cookies
+    // expires in one day
+    const expires = (Date.now() / 1000) + (24 * 60 * 60);
 
-    /**
-     * CloudFront-Expires
-     * CloudFront-Signature
-     * CloudFront-Key-Pair-Id
-     *
-     * "CloudFront-Expires="+cookieVal+"; domain=my.domain; expires="+date.toGMTString()+";";
-     */
+    signer.generate(
+        process.env.KEY_PAIR_ID,
+        process.env.KEY_FILE,
+        process.env.SECURE_HOST,
+        expires, (err, cookie) => {
 
+            if (err) {
+                return callback(err);
+            }
 
-    var cookie = '';
-
-    // set a cookie on response
-    const response = {
-        statusCode: 200,
-        body: JSON.stringify({
-            message: 'You have access',
-            input: event
-        }),
-        Cookie: cookie
-    };
-
-    callback(null, response);
-
+            // set cookies on the response
+            /**
+             * CloudFront-Policy
+             * CloudFront-Signature
+             * CloudFront-Key-Pair-Id
+             */
+            const response = {
+                statusCode: 200,
+                body: JSON.stringify({
+                    message: 'You have access'
+                }),
+                headers: {
+                    'Set-Cookie': 'CloudFront-Signature=' + cookie.signature + "; domain=" + process.env.SECURE_HOST + "; HttpOnly",
+                    'set-cookie': "CloudFront-Policy=" + cookie.policy + "; domain=" + process.env.SECURE_HOST + "; HttpOnly",
+                    'Set-cookie': "CloudFront-Key-Pair-Id=" + cookie.keyPairId + "; domain=" + process.env.SECURE_HOST + "; HttpOnly"
+                }
+            };
+            return callback(null, response);
+        }
+    );
 };
