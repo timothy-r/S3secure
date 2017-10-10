@@ -32,6 +32,8 @@ module.exports.generate = (keyPairId, keyFile, host, expires, callback) => {
         }
     ).replace(/ /g, '');
 
+    console.log(policy);
+
     const encodedPolicy = Buffer.from(policy).toString('base64').replace(/\+/g, '-').replace(/=/g, '_').replace(/\//g, '~');
 
     fs.readFile(keyFile, (err, contents) => {

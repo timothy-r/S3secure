@@ -10,8 +10,8 @@ const signer = require("./signed-cookie");
  */
 module.exports.index = (event, context, callback) => {
 
-    // expires in one day
-    const expires = (Date.now() / 1000) + (24 * 60 * 60);
+    // expires in one day - must use an integer value
+    const expires = Math.floor((Date.now() / 1000) + (24 * 60 * 60));
 
     signer.generate(
         process.env.KEY_PAIR_ID,
@@ -23,7 +23,6 @@ module.exports.index = (event, context, callback) => {
                 return callback(err);
             }
 
-            // set cookies on the response
             /**
              * CloudFront-Policy
              * CloudFront-Signature
