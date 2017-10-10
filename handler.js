@@ -35,9 +35,9 @@ module.exports.index = (event, context, callback) => {
                     message: 'You have access'
                 }),
                 headers: {
-                    'Set-Cookie': 'CloudFront-Signature=' + cookie.signature + "; domain=" + process.env.SECURE_HOST + "; HttpOnly",
-                    'set-cookie': "CloudFront-Policy=" + cookie.policy + "; domain=" + process.env.SECURE_HOST + "; HttpOnly",
-                    'Set-cookie': "CloudFront-Key-Pair-Id=" + cookie.keyPairId + "; domain=" + process.env.SECURE_HOST + "; HttpOnly"
+                    'Set-Cookie': 'CloudFront-Signature=' + cookie['CloudFront-Signature'] + "; domain=" + process.env.SECURE_HOST + "; HttpOnly",
+                    'set-cookie': "CloudFront-Policy=" + cookie['CloudFront-Policy'] + "; domain=" + process.env.SECURE_HOST + "; HttpOnly",
+                    'Set-cookie': "CloudFront-Key-Pair-Id=" + cookie['CloudFront-Key-Pair-Id'] + "; domain=" + process.env.SECURE_HOST + "; HttpOnly"
                 }
             };
             return callback(null, response);

@@ -2,7 +2,7 @@
 
 const AWS = require('aws-sdk');
 AWS.config.update({region: process.env.SERVERLESS_REGION});
-const cloudfront = new AWS.CloudFront({apiVersion: '2017-03-25'});
+//const cloudfront = new AWS.CloudFront({apiVersion: '2017-03-25'});
 const fs = require('fs');
 
 /**
@@ -14,6 +14,8 @@ const fs = require('fs');
  * @param callback
  */
 module.exports.generate = (keyPairId, keyFile, host, expires, callback) => {
+
+    console.log(keyPairId + ' ' + keyFile + ' ' + host + ' ' + expires);
 
     const policy = JSON.stringify(
         {
@@ -38,22 +40,9 @@ module.exports.generate = (keyPairId, keyFile, host, expires, callback) => {
             return callback(err);
         }
 
-        const signer = cloudfront.Signer(keyPairId, contents);
+        const signer = new AWS.CloudFront.Signer(keyPairId, contents);
 
-        signer.getSignedCookie({policy: policy}, (err, hash) => {
-
-                if (err) {
-                    return callback(err);
-                }
-
-                const cookie = {
-                    signature : hash,
-                    keyPairId: keyPairId,
-                    policy : encodedPolicy
-                };
-                return callback(null, cookie);
-            }
-        );
+        signer.getSignedCookie({policy: policy}, callback);
     });
 
 };
