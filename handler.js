@@ -10,6 +10,8 @@ const signer = require("./signed-cookie");
  */
 module.exports.index = (event, context, callback) => {
 
+    console.log(JSON.stringify(event));
+
     // expires in one day - must use an integer value
     const expires = Math.floor((Date.now() / 1000) + (24 * 60 * 60));
 
@@ -17,7 +19,8 @@ module.exports.index = (event, context, callback) => {
         process.env.KEY_PAIR_ID,
         process.env.KEY_FILE,
         process.env.SECURE_HOST,
-        expires, (err, cookie) => {
+        expires,
+        (err, cookie) => {
 
             if (err) {
                 return callback(err);

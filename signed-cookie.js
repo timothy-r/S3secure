@@ -15,8 +15,6 @@ const fs = require('fs');
  */
 module.exports.generate = (keyPairId, keyFile, host, expires, callback) => {
 
-    console.log(keyPairId + ' ' + keyFile + ' ' + host + ' ' + expires);
-
     const policy = JSON.stringify(
         {
             "Statement": [
@@ -31,8 +29,6 @@ module.exports.generate = (keyPairId, keyFile, host, expires, callback) => {
             ]
         }
     ).replace(/ /g, '');
-
-    console.log(policy);
 
     const encodedPolicy = Buffer.from(policy).toString('base64').replace(/\+/g, '-').replace(/=/g, '_').replace(/\//g, '~');
 
